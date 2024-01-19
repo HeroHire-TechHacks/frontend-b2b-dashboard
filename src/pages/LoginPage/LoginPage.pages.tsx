@@ -46,6 +46,7 @@ export const LoginPage = () => {
 			const res = await fetch(
 				import.meta.env.VITE_APP_BACKEND_URL + '/company/login',
 				{
+					method: "POST",
 					headers: {
 						'Content-Type': 'application/json',
 					},
