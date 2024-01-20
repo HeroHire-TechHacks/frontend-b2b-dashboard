@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Navbar from '@/components/common/Navbar.components';
-import { IResponse } from '@/types/response.types';
 import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
@@ -28,7 +27,6 @@ const formSchema = z.object({
 
 export const LoginPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
-	const { toast } = useToast();
 	const navigate = useNavigate();
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -39,7 +37,7 @@ export const LoginPage = () => {
 		},
 	});
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit() {
 		navigate('/');
 	}
 
