@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navbar from '@/components/common/Navbar.components';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,50 +33,62 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
+import { useNavigate } from 'react-router-dom';
 
 export const RoleInfoPage = () => {
+	const navigate = useNavigate();
+
 	const [candidates, setCandidates] = useState([
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Aditya Krishna Gupta',
 			email: 'adityakrishna@gmail.com',
 			status: 'Scheduled',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Mannas Narang',
 			email: 'mannas@gmail.com',
 			status: 'Complete',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Adish Mehta',
 			email: 'adish@gmail.com',
 			status: 'Skipped',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Aishwarya Singh',
 			email: 'aishwarya@gmail.com',
 			status: 'Complete',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Kiran Patel',
 			email: 'kiran@gmail.com',
 			status: 'Scheduled',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Rajesh Sharma',
 			email: 'rajesh@gmail.com',
 			status: 'Scheduled',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Priya Gupta',
 			email: 'priya@gmail.com',
 			status: 'Scheduled',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Vikas Verma',
 			email: 'vikas@gmail.com',
 			status: 'Complete',
 		},
 		{
+			id: Math.floor(Math.random() * 1000000),
 			name: 'Neha Kapoor',
 			email: 'neha@gmail.com',
 			status: 'Complete',
@@ -90,6 +102,7 @@ export const RoleInfoPage = () => {
 
 	const addCandidateToTable = () => {
 		const candidate = {
+			id: Math.floor(Math.random() * 1000000),
 			name: newCandidateName,
 			email: newCandidateEmail,
 			status: 'Scheduled',
@@ -190,11 +203,13 @@ export const RoleInfoPage = () => {
 
 						{candidates.map((candidate, idx) => {
 							return (
-								<TableBody key={idx}>
+								<TableBody
+									key={idx}
+									className="cursor-pointer"
+									onClick={() => navigate('/candidate/' + candidate.id)}
+								>
 									<TableRow>
-										<TableCell className="text-left">
-											{Math.floor(Math.random() * 1000000)}
-										</TableCell>
+										<TableCell className="text-left">{candidate.id}</TableCell>
 										<TableCell className="text-center">
 											{candidate.name}
 										</TableCell>
