@@ -97,7 +97,9 @@ export const DashboardPage = () => {
 								<Card
 									className="w-[350px] cursor-pointer"
 									key={idx}
-									onClick={() => navigate('/role/' + idx)}
+									onClick={() =>
+										navigate('/role/' + idx + '?roleName=' + role.name)
+									}
 								>
 									<CardHeader>
 										<CardTitle>
