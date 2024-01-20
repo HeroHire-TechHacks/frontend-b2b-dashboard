@@ -1,12 +1,6 @@
-import { useState, useEffect } from 'react'
-import * as z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useState } from 'react';
 import Navbar from '@/components/common/Navbar.components';
-import { IResponse } from '@/types/response.types';
-import { useToast } from '@/components/ui/use-toast';
-import { useNavigate } from 'react-router-dom';
-import { PlusIcon, ReloadIcon } from '@radix-ui/react-icons';
+import { PlusIcon, PersonIcon } from '@radix-ui/react-icons';
 import {
 	Card,
 	CardContent,
@@ -14,128 +8,118 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card';
 
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router-dom';
 
 export const DashboardPage = () => {
-	const [roleName, setRoleName] = useState();
-	const [roles, setRoles] = useState(false);
+	const navigate = useNavigate();
 
-	const handleRoleChange = (e: any) => {
-		setRoleName(e.target.value);
+	const [popOverCurrentRoleName, setPopOverCurrentRoleName] = useState('');
+	const [popOverCurrentRoleType, setPopOverCurrentRoleType] = useState('');
+
+	const [roles, setRoles] = useState([
+		{
+			name: 'Software Engineer - 1',
+			description:
+				'This is a basic description of this role that we extract from the jd. This might include ...',
+			numberOfCandidates: 324,
+			type: 'Internship',
+		},
+	]);
+
+	const handleCreateNewRole = () => {
+		setRoles([
+			...roles,
+			{
+				name: popOverCurrentRoleName,
+				description:
+					'This is a basic description of this role that we extract from the jd. This might include ...',
+				numberOfCandidates: 0,
+				type: popOverCurrentRoleType,
+			},
+		]);
+
+		setPopOverCurrentRoleName('');
+		setPopOverCurrentRoleType('');
 	};
 
-	const handleSubmit = (e: any) => {
-		setRoles(true);
-	}
-
-	
 	return (
 		<div>
 			<Navbar page="dashboard" />
-			<div className='flex flex-col justify-center'>
-				{roles ? (
-					<div className='ml-5'>
-						<div className='flex flex-col w-full justify-center items-start'>
-						<Popover>
-							<PopoverTrigger asChild>
-							<Button className='mb-5 w-56 ml-5 mt-5' variant={'outline'}>
+			<div className="ml-5">
+				<div className="mt-6">
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button className="mb-5 w-56 ml-5 mt-5" variant={'outline'}>
 								<PlusIcon className="mr-2 h-4 w-4" />
 								<p className="font-normal text-sm">Create new role</p>
 							</Button>
-							</PopoverTrigger>
-							<PopoverContent>
-								<div>
-									<p>Enter role name</p>
-									<Input type='text' onChange={handleRoleChange} />
-								</div>
-								<div className='mt-8'>
-									<p>Enter job description</p>
-									<Input type='file' accept='application/pdf' />
-								</div>
-								<Button className='mt-4 w-full'>Create role</Button>
-
-							</PopoverContent>
-
-						</Popover>
-							
-						</div>
-						<div className='w-80 h-auto my-8 px-4'>
-
-							<div className='flex flex-row gap-8'>
-								<Card className="w-[350px]">
+						</PopoverTrigger>
+						<PopoverContent className="flex flex-col justify-center gap-4">
+							<div>
+								<p className="mb-2">Enter role name</p>
+								<Input
+									type="text"
+									onChange={(e) => setPopOverCurrentRoleName(e.target.value)}
+									value={popOverCurrentRoleName}
+								/>
+							</div>
+							<div>
+								<p className="mb-2">Role Type</p>
+								<Input
+									type="text"
+									onChange={(e) => setPopOverCurrentRoleType(e.target.value)}
+									value={popOverCurrentRoleType}
+								/>
+							</div>
+							<div>
+								<p className="mb-2">Upload job description</p>
+								<Input type="file" accept="application/pdf" />
+							</div>
+							<Button className="mt-4 w-full" onClick={handleCreateNewRole}>
+								Create role
+							</Button>
+						</PopoverContent>
+					</Popover>
+				</div>
+				<div className="h-auto my-8 mx-4">
+					<div className="flex flex-row gap-8">
+						{roles.map((role, idx) => {
+							return (
+								<Card
+									className="w-[350px] cursor-pointer"
+									key={idx}
+									onClick={() => navigate('/role/' + idx)}
+								>
 									<CardHeader>
 										<CardTitle>
-											<p className='text-2xl'>{roleName}</p>
+											<p className="text-xl">{role.name}</p>
 										</CardTitle>
 										<CardDescription>
-											<p className='text-sm'>Internship | 3 Months</p>
+											<p className="text-sm">{role.type}</p>
 										</CardDescription>
 									</CardHeader>
 									<CardContent>
-										<p className="font-c71717a">This is a basic description of this role that we extract from the js. This might include...</p>
+										<p className="text-c71717a">{role.description}</p>
 									</CardContent>
-									<CardFooter className="flex justify-between">
-										<Button>Deploy</Button>
+									<CardFooter>
+										<PersonIcon className="h-4 w-4 text-c71717a" />
+										<p className="text-sm ml-2">{role.numberOfCandidates}</p>
 									</CardFooter>
 								</Card>
-								
-							</div>
-
-
-						</div>
+							);
+						})}
 					</div>
-				) : (
-					<div className='flex flex-col justify-center items-center mt-48'>
-						{/* <img src={EmptyRolesImage} alt="no-roles" width={150} height={150} /> */}
-
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button className='mt-20'>
-									<p className="font-normal text-sm">Create new Role</p>
-									<PlusIcon className="ml-2 h-4 w-4" />
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent>
-								<div>
-									<p>Enter role name</p>
-									<Input type='text' onChange={handleRoleChange} />
-								</div>
-								<div className='mt-8'>
-									<p>Enter job description</p>
-									<Input type='file' accept='application/pdf' />
-								</div>
-								<Button className='mt-4 w-full' onClick={handleSubmit}>Create role</Button>
-
-							</PopoverContent>
-
-						</Popover>
-
-
-
-					</div>
-				)}
-
-
-
+				</div>
 			</div>
-
-
 		</div>
 	);
 };
