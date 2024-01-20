@@ -33,82 +33,107 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { useNavigate } from 'react-router-dom';
 
 export const RoleInfoPage = () => {
-	const navigate = useNavigate();
-
 	const [candidates, setCandidates] = useState([
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Aditya Krishna Gupta',
 			email: 'adityakrishna@gmail.com',
 			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Mannas Narang',
 			email: 'mannas@gmail.com',
-			status: 'Complete',
+			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Adish Mehta',
 			email: 'adish@gmail.com',
-			status: 'Skipped',
+			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Aishwarya Singh',
 			email: 'aishwarya@gmail.com',
-			status: 'Complete',
+			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Kiran Patel',
 			email: 'kiran@gmail.com',
 			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Rajesh Sharma',
 			email: 'rajesh@gmail.com',
 			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Priya Gupta',
 			email: 'priya@gmail.com',
 			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Vikas Verma',
 			email: 'vikas@gmail.com',
-			status: 'Complete',
+			status: 'Scheduled',
 		},
 		{
-			id: Math.floor(Math.random() * 1000000),
+			id: Math.floor(Math.random() * 1000000).toString(),
 			name: 'Neha Kapoor',
 			email: 'neha@gmail.com',
-			status: 'Complete',
+			status: 'Scheduled',
 		},
 	]);
 
 	const [newCandidateName, setNewCandidateName] = useState('');
 	const [newCandidateEmail, setNewCandidateEmail] = useState('');
+	const [meetLink, setMeetLink] = useState('');
+	const [candidateId, setCandidateId] = useState('');
 
+	const [openAlertPopup, setIsOpenAlertPopup] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
 
+	const generateMeetLink = () => {
+		const cleanCandidateName = newCandidateName.trim();
+		const cleanCandidateEmail = newCandidateEmail.trim();
+
+		if (!cleanCandidateName || !cleanCandidateEmail) return;
+
+		const candidateId = Math.floor(Math.random() * 1000000).toString();
+
+		setCandidateId(candidateId);
+
+		setMeetLink(
+			encodeURI(
+				`https://herohire.xyz/?code=${candidateId}&name=${cleanCandidateName}&email=${cleanCandidateEmail}`
+			)
+		);
+	};
+
 	const addCandidateToTable = () => {
+		const cleanCandidateName = newCandidateName.trim();
+		const cleanCandidateEmail = newCandidateEmail.trim();
+
+		if (!cleanCandidateName || !cleanCandidateEmail) return;
+
 		const candidate = {
-			id: Math.floor(Math.random() * 1000000),
-			name: newCandidateName,
-			email: newCandidateEmail,
+			id: candidateId,
+			name: cleanCandidateName,
+			email: cleanCandidateEmail,
 			status: 'Scheduled',
 		};
 
 		setCandidates([...candidates, candidate]);
+
+		setNewCandidateName('');
+		setNewCandidateEmail('');
 
 		setOpenModal(false);
 	};
@@ -161,18 +186,17 @@ export const RoleInfoPage = () => {
 						<DialogFooter>
 							<AlertDialog>
 								<AlertDialogTrigger>
-									<Button className="ml-4">Add Candidate</Button>
+									<Button className="ml-4" onClick={generateMeetLink}>
+										Add Candidate
+									</Button>
 								</AlertDialogTrigger>
-								<AlertDialogContent>
+								<AlertDialogContent className="overflow-auto">
 									<AlertDialogHeader>
 										<AlertDialogTitle>
 											To add a candidate, copy the following link and share it
 											with the candidate
 										</AlertDialogTitle>
-										<AlertDialogDescription>
-											https://herohire.xyz/?code=
-											{Math.floor(Math.random() * 1000000)}
-										</AlertDialogDescription>
+										<AlertDialogDescription>{meetLink}</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
 										<AlertDialogCancel onClick={() => setOpenModal(false)}>
@@ -206,7 +230,7 @@ export const RoleInfoPage = () => {
 								<TableBody
 									key={idx}
 									className="cursor-pointer"
-									onClick={() => navigate('/candidate/' + candidate.id)}
+									onClick={() => setIsOpenAlertPopup(true)}
 								>
 									<TableRow>
 										<TableCell className="text-left">{candidate.id}</TableCell>
@@ -223,6 +247,25 @@ export const RoleInfoPage = () => {
 								</TableBody>
 							);
 						})}
+
+						<AlertDialog
+							open={openAlertPopup}
+							onOpenChange={setIsOpenAlertPopup}
+						>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Candidate's Profile</AlertDialogTitle>
+									<AlertDialogDescription>
+										The interview is in the 'Scheduled' state. Candidate's
+										profile would only be available after the candidate is done
+										taking the interview.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogAction>Okay</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</Table>
 				</TabsContent>
 			</Tabs>

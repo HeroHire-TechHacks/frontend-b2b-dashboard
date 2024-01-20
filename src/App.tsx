@@ -5,7 +5,6 @@ import { ErrorPage } from './pages/ErrorPage/ErrorPage.pages';
 import { LoginPage } from './pages/LoginPage/LoginPage.pages';
 import { RoleInfoPage } from './pages/RoleInfoPage/RoleInfoPage.pages';
 import { DashboardPage } from './pages/DashboardPage/DashboardPage.pages';
-import { CandidateInfoPage } from './pages/CandidateInfoPage/CandidateInfoPage.pages';
 
 function App() {
 	return (
@@ -15,10 +14,6 @@ function App() {
 					<Route path="/" element={<DashboardPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/role/:roleId" element={<RoleInfoPage />} />
-					<Route
-						path="/candidate/:candidateId"
-						element={<CandidateInfoPage />}
-					/>
 					<Route path="*" element={<ErrorPage />} />
 				</Routes>
 			</div>
