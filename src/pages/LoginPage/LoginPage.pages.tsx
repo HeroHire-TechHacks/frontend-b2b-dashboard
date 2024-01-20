@@ -40,50 +40,7 @@ export const LoginPage = () => {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		try {
-			setIsLoading(true);
-
-			const res = await fetch(
-				import.meta.env.VITE_APP_BACKEND_URL + '/company/login',
-				{
-					method: "POST",
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(values),
-				}
-			);
-
-			const resData: IResponse = await res.json();
-
-			if (resData.responseStringCode === 'UNAUTHORIZED') {
-				toast({
-					title: 'Invalid credentials',
-					description: 'Invalid credentials. Please try again.',
-					variant: 'destructive',
-				});
-
-				return;
-			}
-
-			const data = resData.data as { token: string };
-
-			window.localStorage.setItem('token', data.token);
-
-			return navigate('/');
-		} catch (err) {
-			console.log(err);
-			toast({
-				title: 'Some error while logging in',
-				description:
-					'Some error while logging in to the dashboard. Please contact the team.',
-				variant: 'destructive',
-			});
-
-			return;
-		} finally {
-			setIsLoading(false);
-		}
+		navigate('/');
 	}
 
 	return (

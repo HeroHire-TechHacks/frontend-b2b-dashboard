@@ -8,124 +8,133 @@ import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { PlusIcon, ReloadIcon } from '@radix-ui/react-icons';
 import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card"
+
+import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 
 export const DashboardPage = () => {
-	const { toast } = useToast()
-	const navigate = useNavigate()
+	const [roleName, setRoleName] = useState();
+	const [roles, setRoles] = useState(false);
 
-	const [roles, setRoles] = useState([])
-	const [isLoading, setLoading] = useState(false)
+	const handleRoleChange = (e: any) => {
+		setRoleName(e.target.value);
+	};
 
-	async function getRoles() {
-		setLoading(true)
-
-		const userToken = window.localStorage.getItem('token')?.trim() || null;
-
-		if (!userToken) {
-			window.localStorage.removeItem('token');
-			navigate('/login');
-
-			return;
-		}
-
-		const res = await fetch(import.meta.env.VITE_APP_BACKEND_URL + '/company/roles', {
-			method: "GET",
-			headers: {
-				'content-type': "application/json",
-				'authorization': "Bearer " + userToken
-			}
-		})
-
-		const responseData: IResponse = await res.json();
-
-		if (responseData.isError) {
-			if (responseData.responseStringCode === 'UNAUTHORIZED') {
-				window.localStorage.removeItem('token');
-				navigate('/login');
-
-				return;
-			}
-
-			toast({
-				title: "Some error occured while getting roles",
-				description: "We encountered some errors while getting roles you created. Please contact the team.",
-				variant: "destructive"
-			})
-
-			return;
-		}
-
-		const data = responseData.data as any;
-
-		setRoles(data);
+	const handleSubmit = (e: any) => {
+		setRoles(true);
 	}
 
-	useEffect(() => {
-		try {
-			getRoles();
-		} catch (err) {
-			console.log(err)
-			// toast({
-			// 	title: "Some error occured while getting roles",
-			// 	description: "We encountered some errors while getting roles you created. Please contact the team.",
-			// 	variant: "destructive"
-			// })
-		} finally {
-			setLoading(false)
-		}
-	}, [])
-
+	
 	return (
 		<div>
 			<Navbar page="dashboard" />
-			{
-				isLoading ? <div className='w-full flex-col flex justify-center items-center'>
-					<ReloadIcon className="mt-48 h-12 w-12 animate-spin text-gray-800" />
-				</div> : <div className='flex flex-col justify-center'>
-					{
-						roles.length ? (
-							<div>
+			<div className='flex flex-col justify-center'>
+				{roles ? (
+					<div className='ml-5'>
+						<div className='flex flex-col w-full justify-center items-start'>
+						<Popover>
+							<PopoverTrigger asChild>
+							<Button className='mb-5 w-56 ml-5 mt-5' variant={'outline'}>
+								<PlusIcon className="mr-2 h-4 w-4" />
+								<p className="font-normal text-sm">Create new role</p>
+							</Button>
+							</PopoverTrigger>
+							<PopoverContent>
+								<div>
+									<p>Enter role name</p>
+									<Input type='text' onChange={handleRoleChange} />
+								</div>
+								<div className='mt-8'>
+									<p>Enter job description</p>
+									<Input type='file' accept='application/pdf' />
+								</div>
+								<Button className='mt-4 w-full'>Create role</Button>
 
+							</PopoverContent>
+
+						</Popover>
+							
+						</div>
+						<div className='w-80 h-auto my-8 px-4'>
+
+							<div className='flex flex-row gap-8'>
+								<Card className="w-[350px]">
+									<CardHeader>
+										<CardTitle>
+											<p className='text-2xl'>{roleName}</p>
+										</CardTitle>
+										<CardDescription>
+											<p className='text-sm'>Internship | 3 Months</p>
+										</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<p className="font-c71717a">This is a basic description of this role that we extract from the js. This might include...</p>
+									</CardContent>
+									<CardFooter className="flex justify-between">
+										<Button>Deploy</Button>
+									</CardFooter>
+								</Card>
+								
 							</div>
-						) : (
-							<div className='flex flex-col justify-center items-center mt-48'>
-								{/* <img src={EmptyRolesImage} alt="no-roles" width={150} height={150} /> */}
-
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button className='mt-20'>
-											<p className="font-normal text-sm">Create new Role</p>
-											<PlusIcon className="ml-2 h-4 w-4" />
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent>
-										<div>
-										<p>Enter role name</p>
-										<Input type='text' />	
-										</div>
-										<div className='mt-8'>
-										<p>Enter role name</p>
-										<Input type='file' accept='application/pdf' />	
-										</div>
-										<Button className='mt-4 w-full'>Create role</Button>
-										
-									</PopoverContent>
-
-								</Popover>
 
 
+						</div>
+					</div>
+				) : (
+					<div className='flex flex-col justify-center items-center mt-48'>
+						{/* <img src={EmptyRolesImage} alt="no-roles" width={150} height={150} /> */}
 
-							</div>
-						)
-					}
-				</div>
-			}
+						<Popover>
+							<PopoverTrigger asChild>
+								<Button className='mt-20'>
+									<p className="font-normal text-sm">Create new Role</p>
+									<PlusIcon className="ml-2 h-4 w-4" />
+								</Button>
+							</PopoverTrigger>
+							<PopoverContent>
+								<div>
+									<p>Enter role name</p>
+									<Input type='text' onChange={handleRoleChange} />
+								</div>
+								<div className='mt-8'>
+									<p>Enter job description</p>
+									<Input type='file' accept='application/pdf' />
+								</div>
+								<Button className='mt-4 w-full' onClick={handleSubmit}>Create role</Button>
+
+							</PopoverContent>
+
+						</Popover>
+
+
+
+					</div>
+				)}
+
+
+
+			</div>
+
 
 		</div>
 	);
